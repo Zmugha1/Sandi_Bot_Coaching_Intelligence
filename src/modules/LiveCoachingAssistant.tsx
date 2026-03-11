@@ -485,11 +485,11 @@ export default function LiveCoachingAssistant() {
   const [currentQuery, setCurrentQuery] = useState('');
   const [currentResponse, setCurrentResponse] = useState('');
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    
-    const query = input;
-    
+  const sendMessage = (messageText: string) => {
+    if (!messageText.trim()) return;
+
+    const query = messageText;
+
     // Log the query
     auditLog.log({
       userId: 'sandy',
@@ -500,25 +500,24 @@ export default function LiveCoachingAssistant() {
       clientId: selectedClient?.id,
       clientName: selectedClient?.name,
     });
-    
+
     // Add user message
     setMessages(prev => [...prev, { type: 'user', content: query }]);
     setCurrentQuery(query);
-    
+
     // Generate sources
     const sources = generateSourceCitations(query, selectedClient || undefined);
     setCurrentSources(sources);
-    
-    // Simulate bot response
+
+    // Generate bot response
     setTimeout(() => {
       let response = '';
       const lowerInput = query.toLowerCase();
-      
+
       if (lowerInput.includes('push') || lowerInput.includes('pause')) {
         if (selectedClient) {
           response = `Based on ${selectedClient.name}'s profile:\n\n• Readiness: ${Math.round((Object.values(selectedClient.readiness).reduce((a, b) => a + b, 0) / 20) * 100)}%\n• Persona: ${selectedClient.persona}\n• Stage: ${selectedClient.stage}\n\nRecommendation: **${selectedClient.recommendation}** (${selectedClient.confidence}% confidence)\n\n${selectedClient.recommendation === 'PUSH' ? 'They show high readiness - advance aggressively toward next steps.' : selectedClient.recommendation === 'NURTURE' ? 'Build the relationship with valuable content and check-ins.' : 'Give them space - they need more time to evaluate.'}`;
-          
-          // Log recommendation
+
           auditLog.log({
             userId: 'sandy',
             userName: 'Sandy Stahl',
@@ -538,14 +537,14 @@ export default function LiveCoachingAssistant() {
             sourcesCited: sources,
           });
         } else {
-          response = 'Please select a client first so I can analyze their specific situation and give you a tailored recommendation with full source citations.';
+          response = 'Please select a client first so I can analyze their specific situation.';
         }
       } else if (lowerInput.includes('say') || lowerInput.includes('script')) {
         if (selectedClient) {
           const disc = knowledgeGraph.discCoaching[selectedClient.disc.style];
           response = `For ${selectedClient.name} (${selectedClient.disc.style} style):\n\n**Opening approach:**\n${disc.coachingTips[0]}\n\n**Key phrases to use:**\n• "${selectedClient.ilwe.income.target} in ${selectedClient.ilwe.income.timeline} is achievable with the right system"\n• "Let's talk about how this fits your goal to ${selectedClient.visionStatement.motivators.workLife.toLowerCase()}"\n\n**Avoid:**\n${disc.coachingTips.slice(-1)[0]}`;
         } else {
-          response = 'Select a client to get persona-specific scripts and language recommendations with DISC-based citations.';
+          response = 'Select a client to get persona-specific scripts and language recommendations.';
         }
       } else if (lowerInput.includes('homework')) {
         response = 'Suggested homework based on their stage:\n\n• **IC:** Send DISC and You 2.0 assessments\n• **C1:** Review DISC results, discuss You 2.0 statement\n• **C2:** Complete TUMAY, discuss funding options\n• **C3:** Prepare for Discovery Center, research possibilities\n• **C4:** Contact franchise owners, complete validation';
@@ -554,12 +553,11 @@ export default function LiveCoachingAssistant() {
       } else if (lowerInput.includes('pink flag')) {
         response = 'Pink Flags to watch for:\n\n• **C1:** Not completing assessments, not involving spouse\n• **C2:** Only talking about job market, not open to funding\n• **C3:** Dismissing possibilities before learning, not showing up for Zor calls\n• **C4:** Making assumptive comments, spouse opposed\n\nIf you see a pattern of Pink Flags, it may indicate a coaching opportunity.';
       } else {
-        response = 'I can help you with:\n\n• Push/pause recommendations (with readiness analysis)\n• Call scripts and talking points (DISC-based)\n• Homework assignments (stage-appropriate)\n• Financial positioning\n• Objection handling\n• Spouse concerns\n• Pink flag identification\n• CLEAR framework questions\n\nWhat would you like to know?';
+        response = 'I can help you with:\n\n• Push/pause recommendations\n• Call scripts and talking points\n• Homework assignments\n• Financial positioning\n• Objection handling\n• Spouse concerns\n• Pink flag identification\n• CLEAR framework questions\n\nWhat would you like to know?';
       }
-      
+
       setCurrentResponse(response);
-      
-      // Log the response
+
       auditLog.log({
         userId: 'sandy',
         userName: 'Sandy Stahl',
@@ -571,16 +569,19 @@ export default function LiveCoachingAssistant() {
         clientName: selectedClient?.name,
         sourcesCited: sources,
       });
-      
+
       setMessages(prev => [...prev, { type: 'bot', content: response, sources }]);
     }, 500);
-    
+
     setInput('');
   };
 
+  const handleSend = () => {
+    sendMessage(input);
+  };
+
   const handleQuickAction = (action: string) => {
-    setInput(action);
-    setTimeout(() => handleSend(), 100);
+    sendMessage(action);
   };
 
   const handleShowSources = () => {

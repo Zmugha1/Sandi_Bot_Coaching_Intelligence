@@ -17,6 +17,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
 // Module Components
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import ExecutiveDashboard from '@/modules/ExecutiveDashboard';
 import ClientIntelligence from '@/modules/ClientIntelligence';
 import PipelineVisualizer from '@/modules/PipelineVisualizer';
@@ -218,83 +219,83 @@ function App() {
     switch (activeModule) {
       case 'dashboard':
         return (
-          <>
+          <ErrorBoundary moduleName="Executive Dashboard">
             <ModuleHeader 
               title="Executive Dashboard" 
               description="Real-time KPIs and pipeline performance overview"
             />
             <ExecutiveDashboard />
-          </>
+          </ErrorBoundary>
         );
       case 'clients':
         return (
-          <>
+          <ErrorBoundary moduleName="Client Intelligence">
             <ModuleHeader 
               title="Client Intelligence" 
               description="DISC profiles, You 2.0, Vision Statements, and TUMAY data"
             />
             <ClientIntelligence />
-          </>
+          </ErrorBoundary>
         );
       case 'pipeline':
         return (
-          <>
+          <ErrorBoundary moduleName="Pipeline Visualizer">
             <ModuleHeader 
               title="Pipeline Visualizer" 
               description="5-compartment coaching journey with Pink Flags"
             />
             <PipelineVisualizer />
-          </>
+          </ErrorBoundary>
         );
       case 'coaching':
         return (
-          <>
+          <ErrorBoundary moduleName="Live Coaching Assistant">
             <ModuleHeader 
               title="Live Coaching Assistant" 
               description="Sandi Bot with CLEAR framework and source citations"
             />
             <LiveCoachingAssistant />
-          </>
+          </ErrorBoundary>
         );
       case 'analysis':
         return (
-          <>
+          <ErrorBoundary moduleName="Post-Call Analysis">
             <ModuleHeader 
               title="Post-Call Analysis" 
               description="CLEAR scoring methodology and coaching effectiveness"
             />
             <PostCallAnalysis />
-          </>
+          </ErrorBoundary>
         );
       case 'admin':
         return (
-          <>
+          <ErrorBoundary moduleName="Admin Streamliner">
             <ModuleHeader 
               title="Admin Streamliner" 
               description="Activity logs, system settings, and data management"
             />
             <AdminStreamliner />
-          </>
+          </ErrorBoundary>
         );
       case 'audit':
         return (
-          <>
+          <ErrorBoundary moduleName="Audit & Transparency">
             <ModuleHeader 
               title="Audit & Transparency" 
               description="Source citations, audit logs, and transparency metrics"
             />
             <AuditTransparency />
-          </>
+          </ErrorBoundary>
         );
       case 'help':
         return (
-          <>
+          <ErrorBoundary moduleName="How to Use This Dashboard">
             <ModuleHeader 
               title="How to Use This Dashboard" 
               description="Complete guide to all features and best practices"
             />
             <HowToUse />
-          </>
+          </ErrorBoundary>
         );
       default:
         return null;

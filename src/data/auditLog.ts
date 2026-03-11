@@ -205,7 +205,7 @@ class AuditLogStore {
     };
   }
   
-  private categorizeQuery(query: string): string {
+  categorizeQuery(query: string): string {
     const lower = query.toLowerCase();
     if (lower.includes('push') || lower.includes('pause') || lower.includes('nurture')) {
       return 'Recommendation';
@@ -405,7 +405,7 @@ export function generateResponseExplanation(
   parts.push('## How this response was generated:\n');
   
   // Query analysis
-  parts.push(`**Query Type:** ${auditLog['categorizeQuery'](query)}`);
+  parts.push(`**Query Type:** ${auditLog.categorizeQuery(query)}`);
   
   // Sources used
   parts.push(`\n**Sources Consulted (${sources.length}):**`);
