@@ -144,7 +144,7 @@ export const clearFramework = {
 export const clientExperience = {
   stages: [
     {
-      compartment: "Business Development",
+      compartment: "BD",
       name: "Initial Contact",
       color: "#FEF3C7", // yellow
       objective: "Seeker's curiosity is piqued about the coaching experience and exploring alternative options",
